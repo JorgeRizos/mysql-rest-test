@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.google.gson.annotations.SerializedName;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,12 +24,15 @@ public class Competition {
  
 	@Id
 	@Column(name = "ID")
+	@SerializedName("id")
 	private Integer competitionId;
 	
 	@Column(name = "CODE")
-	private Integer competitionCode;
+	@SerializedName("code")
+	private String competitionCode;
 	
 	@Column(name = "NAME")
+	@SerializedName("name")
 	private String competitionName;
 	
 	@OneToOne(cascade = CascadeType.ALL)
