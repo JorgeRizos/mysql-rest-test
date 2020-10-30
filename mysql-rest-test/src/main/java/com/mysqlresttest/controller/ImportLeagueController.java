@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mysqlresttest.dto.RequestDto;
-import com.mysqlresttest.entity.Player;
 import com.mysqlresttest.entity.Team;
 
 @RestController
@@ -32,28 +30,28 @@ public class ImportLeagueController {
 	@GetMapping(path = "/{leagueCode}")
 	public void getLeagueInfo(@PathVariable("leagueCode") String leagueCode) throws IOException {
 		RequestDto competition = getCompetition(leagueCode);
+		System.out.println(competition.getCompetition().getCompetitionName());
 		Set<Team> teams = competition.getTeams();
-		List<Player> allPlayers;
 		for (Team team : teams) {
 			getTeamPlayers(team);
-			
 		}
 	}
 
 	private RequestDto getCompetition(String leagueCode) throws IOException {
 		URL url = new URL(URL_COMPETITIONS + leagueCode + TEAMS);
 		URLConnection connection = url.openConnection();
-		connection.setRequestProperty(AUTH_HEADER_NAME, "AUTH_TOKEN");
+		connection.setRequestProperty(AUTH_HEADER_NAME, AUTH_TOKEN);
 		InputStream inputStream = connection.getInputStream();
 		String encoding = connection.getContentEncoding();
 		encoding = encoding == null ? "UTF-8" : encoding;
 		String body = IOUtils.toString(inputStream, encoding);
 		Gson gson = new GsonBuilder().create();
+		System.out.println(body);
 		return gson.fromJson(body, RequestDto.class);
 	}
 
 	private void getTeamPlayers(Team team) throws IOException {
-		URL url = new URL(URL_PLAYERS + team.getTeamId());
+		URL url = new URL(URL_PLAYERS + team.getTeamId() );
 		URLConnection connection = url.openConnection();
 		connection.setRequestProperty(AUTH_HEADER_NAME, AUTH_TOKEN);
 		InputStream inputStream = connection.getInputStream();
